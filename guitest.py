@@ -2,8 +2,21 @@ import PySimpleGUI as sg
 from daysheetmaker import *
 
 
-sg.theme('SandyBeach')   # Add a touch of color
-def demo_date_picker():
+import queue
+import threading
+import time
+
+
+
+
+def the_gui():
+    
+    
+
+
+
+    sg.theme('SandyBeach')   # Add a touch of color
+
     layout = [
         [ 
             sg.Text("Enter day sheet date you want to start from: "),
@@ -21,28 +34,69 @@ def demo_date_picker():
             sg.InputText(key="printername")
             ], 
             [ 
-            sg.Submit(), 
-            sg.Cancel(), 
+            sg.Submit(),
             sg.Text("___________________________________________________",key='pro')
         ]
     ]
-    
     window = sg.Window('Day Sheet Creator',keep_on_top=True).Layout(layout)
 
-    while True:
-        event, values = window.Read()
-        if event == "Submit":
-            print(values)
-            print(type(values["printername"]))
+    gui_queue = queue.Queue()
 
-            # PRINT PAGES 
-            window.Element('pro').Update("Printing")
-            maker = daysheetmaker(values['startdate'],values['enddate'],values['printername'])
-            maker.runner()
-        if event is None or event == 'Cancel':
-            return None
+    
+        # --------------------- EVENT LOOP ---------------------
+    while True:
+        event, values = window.Read(timeout=100)       # wait for up to 100 ms for a GUI event
+        if event == "Submit":
+            try:
+                
+
+                threading.Thread(target=guitaskgiver, args=(gui_queue,values,), daemon=True).start()
+            
+            
+            except Exception as e:
+                print(e)
+        # --------------- Check for incoming messages from threads  ---------------
+        try:
+            message = gui_queue.get_nowait()
+        except queue.Empty:             # get_nowait() will get exception when Queue is empty
+            message = None              # break from the loop if no more messages are queued up
+
+        # if message received from queue, display the message in the Window
+        if message:
+            print('Got a message back from the thread: ', message)
+
+    # if user exits the window, then close the window and exit the GUI func
+    window.Close()
         
-        
-        
-demo_date_picker()
+    
+    
+    
+def guitaskgiver(gui_queue,values):
+    maker = daysheetmaker(values['startdate'],values['enddate'],values['printername'])
+    maker.runner()
+    gui_queue.put('** Done **')  # put a message into queue for GUI
+      
+    
+
+    
+    
+    
+    
+    
+    
+# event, values = window.Read()
+# if event == "Submit":
+#     print(values)
+#     print(type(values["printername"]))
+
+#     # PRINT PAGES 
+#     window.Element('pro').Update("Printing")
+#     maker = daysheetmaker(values['startdate'],values['enddate'],values['printername'])
+#     maker.runner()
+# if event is None or event == 'Cancel':
+#     return None
+            
+            
+            
+the_gui()
 

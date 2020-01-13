@@ -9,6 +9,10 @@ from PIL import ImageFont
 #print
 import os
 
+import PySimpleGUI as sg
+import queue
+import threading
+import time
 
 class daysheetmaker:
     
@@ -18,7 +22,7 @@ class daysheetmaker:
         self.printername = printername
     
  
-
+    gui_queue = queue.Queue()
     def runner(self):
 
 
@@ -133,14 +137,20 @@ class daysheetmaker:
                 drawing.text(pos5, info[4], fill=green, font=font)
                 if tidestatus:
                     drawing.text(pos6, "Weird Tides Today", fill=green, font=font)
-                photo.show()
+                # view image
+                # photo.show()
                 photo.save(output_image_path)
                 
             watermark_text(picin,picout, finalarray, (300,65),(3200,35),(3200,95),(2750,35),(2750,95),(2300,120), singletide)
 
             #print 
+            # if self.printername != '':
+            #     os.system("lpr -P "+ self.printername  + " editpo.png")
+            # else:
+            #     os.system("lpr -P brotherprint editpo.png")
+            
+    gui_queue.put('** Done **')
 
-            # os.system("lpr -P brotherprint editpo.png")
 
 
             
