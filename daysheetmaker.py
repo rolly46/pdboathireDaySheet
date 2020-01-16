@@ -36,14 +36,15 @@ class daysheetmaker:
             pdfmetrics.registerFont(TTFont('Verdana Regular', '/Users/samralston/Desktop/print/VERDANA.TTF'))
             can.setFont("Verdana Regular", 15)
             can.drawString(57, 568, str(info[0]))
-
             can.drawString(640, 568, "H:")
-            can.drawString(660, 577, info[3])
-            can.drawString(660, 557, info[4])
-
             can.drawString(740, 568, "L:")
+            can.setFont("Verdana Regular", 10)
+            # high tides
+            can.drawString(660, 577, info[3])
+            can.drawString(660, 562, info[4])
+            # low tides
             can.drawString(760, 577, info[1])
-            can.drawString(760, 557, info[2])
+            can.drawString(760, 562, info[2])
             if tidestatus:
                 can.drawString(522, 568, "Special")
             can.save()
@@ -57,6 +58,7 @@ class daysheetmaker:
             # add the "watermark" (which is the new pdf) on the existing page
             page = existing_pdf.getPage(0)
             page.mergePage(new_pdf.getPage(0))
+            page.rotateCounterClockwise(90)
             output.addPage(page)
             # finally, write "output" to a real file
             outputStream = open("dayEdit.pdf", "wb")
@@ -148,11 +150,9 @@ class daysheetmaker:
                 
             #print 
                 if self.printername != '':
-                    print("fake printing irregular")
-                      #os.system("lpr -P "+ self.printername  + " dayEdit.pdf")
+                    os.system("lpr -P "+ self.printername  + " dayEdit.pdf")
                 else:
-                    print("fake printing normal")
-                      #os.system("lpr -P brotherprint dayEdit.pdf")
+                    os.system("lpr -o landscape -P brotherprint dayEdit.pdf")
              
             qu.put("All daysheets qeued. They should now be printing.")
         

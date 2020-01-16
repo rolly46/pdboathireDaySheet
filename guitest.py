@@ -81,22 +81,6 @@ def guitaskgiver(gui_queue,values):
 
     
     
-    
-    
-    
-    
-# event, values = window.Read()
-# if event == "Submit":
-#     print(values)
-#     print(type(values["printername"]))
-
-#     # PRINT PAGES 
-#     window.Element('pro').Update("Printing")
-#     maker = daysheetmaker(values['startdate'],values['enddate'],values['printername'])
-#     maker.runner()
-# if event is None or event == 'Cancel':
-#     return None
-            
             
             
 the_gui()
