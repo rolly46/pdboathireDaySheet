@@ -38,6 +38,8 @@ class daysheetmaker:
             can.drawString(57, 568, str(info[0]))
             can.drawString(640, 568, "H:")
             can.drawString(740, 568, "L:")
+            if tidestatus:
+                can.drawString(522, 568, "Special")
             can.setFont("Verdana Regular", 10)
             # high tides
             can.drawString(660, 577, info[3])
@@ -45,8 +47,6 @@ class daysheetmaker:
             # low tides
             can.drawString(760, 577, info[1])
             can.drawString(760, 562, info[2])
-            if tidestatus:
-                can.drawString(522, 568, "Special")
             can.save()
 
             #move to the beginning of the StringIO buffer
